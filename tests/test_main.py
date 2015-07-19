@@ -1558,6 +1558,33 @@ def test_power_overwhelming():
 	assert wisp not in game.board
 
 
+def test_power_overwhelming_shadow_madness():
+	game = prepare_game()
+	game.player1.discard_hand()
+	game.player2.discard_hand()
+
+	# start the game on the dominant player
+	if not game.players[0].current_player:
+		game.end_turn()
+
+	wisp1 = game.current_player.opponent.summon(SPELLBENDERT)
+	shadowmadness = game.current_player.give("EX1_334")
+	shadowmadness.play(target=wisp1)
+	game.current_player.give("EX1_316").play(target=wisp1)
+	game.end_turn()
+
+	assert wisp1.dead
+
+	wisp2 = game.current_player.opponent.summon(WISP)
+	shadowmadness = game.current_player.give("EX1_334")
+	shadowmadness.play(target=wisp2)
+	game.current_player.give("EX1_316").play(target=wisp2)
+	game.end_turn()
+
+	assert not wisp2.dead
+	assert wisp2.controller == game.current_player
+
+
 def test_questing_adventurer():
 	game = prepare_game()
 	adventurer = game.current_player.give("EX1_044")

@@ -213,6 +213,8 @@ class Action:  # Lawsuit
 			zone = getattr(entity, "zone", Zone.INVALID)
 			if zone not in (Zone.PLAY, Zone.SECRET, Zone.HAND):
 				continue
+			if self.__class__.__name__ == "EndTurn":
+				logging.warning("Broadcasting %r to %r", self, entity)
 			for event in entity._events:
 				if entity.zone == Zone.HAND and not event.in_hand:
 					continue
@@ -322,7 +324,9 @@ class EndTurn(GameAction):
 	type = None
 
 	def do(self, source, game, *args):
+		logging.warning("Begin broadcasting END_TURN")
 		self.broadcast(game, EventListener.ON, self.player)
+		logging.warning("End broadcasting END_TURN")
 		game._end_turn()
 
 

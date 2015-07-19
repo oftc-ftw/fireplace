@@ -135,7 +135,7 @@ class EX1_316:
 	play = Buff(TARGET, "EX1_316e")
 
 class EX1_316e:
-	events = TURN_END.on(Destroy(OWNER))
+	events = TURN_END.on(lambda self, player, *args: player is self.controller and Destroy(OWNER))
 
 
 # Sense Demons
