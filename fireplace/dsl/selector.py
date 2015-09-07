@@ -197,6 +197,29 @@ class SelfSelector(Selector):
 SELF = SelfSelector()
 
 
+class ControllerSelector(Selector):
+	"""
+	Selects the controller.
+	"""
+	class IsController:
+		def test(self, entity, source):
+			return entity is source.controller
+
+	def __init__(self):
+		self.program = [self.IsController()]
+
+	def __repr__(self):
+		return "<CONTROLLER>"
+
+	def eval(self, entities, source):
+		return [source.controller]
+
+	def test(self, entity, source):
+		return entity is source.controller
+
+CONTROLLER = ControllerSelector()
+
+
 class OwnerSelector(Selector):
 	"""
 	Selects the source's owner.
@@ -372,7 +395,6 @@ ALL_WEAPONS = IN_PLAY + WEAPON
 ALL_SECRETS = HIDDEN + SECRET
 ALL_HERO_POWERS = IN_PLAY + HERO_POWER
 
-CONTROLLER = ALL_PLAYERS + FRIENDLY
 FRIENDLY_HERO = IN_PLAY + FRIENDLY + HERO
 FRIENDLY_MINIONS = IN_PLAY + FRIENDLY + MINION
 FRIENDLY_CHARACTERS = IN_PLAY + FRIENDLY + CHARACTER
