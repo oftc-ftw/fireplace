@@ -1,7 +1,7 @@
 import operator
 import random
 from enum import IntEnum
-from ..enums import Affiliation, CardType, GameTag, Race, Zone
+from ..enums import CardType, GameTag, Race, Zone
 from ..utils import CardList
 
 
@@ -243,6 +243,32 @@ class OpponentSelector(Selector):
 OPPONENT = OpponentSelector()
 
 
+class ControlSelector(Selector):
+	"""
+	Selects cards with a matching controller.
+	"""
+	class SelectMatchingController:
+		def __init__(self, selector):
+			self.selector = selector
+
+		def merge(self, selector, entities):
+			return [e for e in entities if e.controller == "what?"]
+
+	def __init__(self, selector):
+		p = self.SelectMatchingController(selector)
+		self.selector = selector
+		self.program = [Selector.MergeFilter]
+		self.program.extend(selector.program)
+		self.program.append(Selector.Merge)
+		self.program.append(p)
+		self.program.append(Selector.Unmerge)
+
+	def __repr__(self):
+		return "<CONTROLLED_BY(%r)>" % (self.selector)
+
+CONTROLLED_BY = ControlSelector
+
+
 class OwnerSelector(Selector):
 	"""
 	Selects the source's owner.
@@ -384,9 +410,9 @@ IN_HAND = Selector(Zone.HAND)
 HIDDEN = Selector(Zone.SECRET)
 KILLED = Selector(Zone.GRAVEYARD)
 
-FRIENDLY = Selector(Affiliation.FRIENDLY)
-ENEMY = Selector(Affiliation.HOSTILE)
-CONTROLLED_BY_TARGET = Selector(Affiliation.TARGET)
+FRIENDLY = CONTROLLED_BY(CONTROLLER)
+ENEMY = CONTROLLED_BY(OPPONENT)
+CONTROLLED_BY_TARGET = CONTROLLED_BY(TARGET)
 
 PLAYER = Selector(CardType.PLAYER)
 HERO = Selector(CardType.HERO)
