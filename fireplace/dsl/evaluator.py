@@ -96,5 +96,5 @@ class Joust(Evaluator):
 		t1 = self.selector1.eval(source.game, source)
 		t2 = self.selector2.eval(source.game, source)
 		diff = sum(t.cost for t in t1) - sum(t.cost for t in t2)
-		logger.info("Jousting %r vs %r -> %i difference", t1, t2, diff)
+		logger.debug("Jousting %r vs %r -> %i difference", t1, t2, diff)
 		return diff > 0

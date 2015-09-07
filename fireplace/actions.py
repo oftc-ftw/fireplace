@@ -363,7 +363,7 @@ class Buff(TargetedAction):
 	def do(self, source, target, buff):
 		kwargs = self._kwargs.copy()
 		for k, v in kwargs.items():
-			logger.info("for %r, %r in %r.items()", k, v, kwargs)
+			logger.debug("for %r, %r in %r.items()", k, v, kwargs)
 			if isinstance(v, LazyNum):
 				kwargs[k] = v.evaluate(source)
 		source.buff(target, buff, **kwargs)
@@ -735,7 +735,7 @@ class Shuffle(TargetedAction):
 		CARDS = 1
 
 	def do(self, source, target, cards):
-		logger.info("%r shuffles into %s's deck", cards, target)
+		logger.debug("%r shuffles into %s's deck", cards, target)
 		if not isinstance(cards, list):
 			cards = [cards]
 
