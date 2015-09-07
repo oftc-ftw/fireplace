@@ -48,7 +48,7 @@ class CardList(list):
 		return self.__class__(e for k, v in kwargs.items() for e in self if getattr(e, k, 0) == v)
 
 
-def random_draft(hero, exclude=[]):
+def random_draft(hero, exclude=[], custom_collection=[]):
 	"""
 	Return a deck of 30 random cards from the \a hero's collection
 	"""
@@ -58,10 +58,11 @@ def random_draft(hero, exclude=[]):
 	from .enums import CardType, Rarity
 
 	deck = []
+	pile = custom_collection if custom_collection else cards.cardlist
 	collection = []
 	hero = getattr(cards, hero)
 
-	for card in cards.cardlist:
+	for card in pile:
 		if card in exclude:
 			continue
 		cls = getattr(cards, card)
@@ -74,6 +75,11 @@ def random_draft(hero, exclude=[]):
 			continue
 		collection.append(cls)
 
+	if len(collection) < Deck.MAX_CARDS:
+		raise ValueError("Given custom_collection contains an insufficient amount of cards")
+		# unfortunately there might be duplicates in the 
+		# collection so that we still won't get enough cards
+        
 	while len(deck) < Deck.MAX_CARDS:
 		card = random.choice(collection)
 		if card.rarity == Rarity.LEGENDARY and card.id in deck:
@@ -103,4 +109,4 @@ def get_logger(name, level=logging.DEBUG):
 	return logger
 
 
-fireplace_logger = get_logger("fireplace")
+fireplace_logger = get_logger("fireplace", logging.DEBUG)
