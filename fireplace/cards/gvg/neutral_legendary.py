@@ -13,6 +13,15 @@ class GVG_110t:
 	deathrattle = Hit(RANDOM_ENEMY_CHARACTER, RandomNumber(1, 4))
 
 
+# Mogor the Ogre
+class GVG_112:
+	events = Attack(ALL_MINIONS).on(COINFLIP & Retarget(
+		Attack.Args.ATTACKER,
+		RANDOM_ENEMY_CHARACTER - Attack.Args.ATTACKER,
+		source=Attack.Args.ATTACKER
+	))
+
+
 # Foe Reaper 4000
 class GVG_113:
 	events = Attack(SELF).on(CLEAVE)
