@@ -220,6 +220,29 @@ class ControllerSelector(Selector):
 CONTROLLER = ControllerSelector()
 
 
+class OpponentSelector(Selector):
+	"""
+	Selects the opponent of the controller.
+	"""
+	class IsOpponent:
+		def test(self, entity, source):
+			return entity is source.controller.opponent
+
+	def __init__(self):
+		self.program = [self.IsOpponent()]
+
+	def __repr__(self):
+		return "<OPPONENT>"
+
+	def eval(self, entities, source):
+		return [source.controller.opponent]
+
+	def test(self, entity, source):
+		return entity is source.controller.opponent
+
+OPPONENT = OpponentSelector()
+
+
 class OwnerSelector(Selector):
 	"""
 	Selects the source's owner.
@@ -402,7 +425,6 @@ FRIENDLY_WEAPON = IN_PLAY + FRIENDLY + WEAPON
 FRIENDLY_SECRETS = HIDDEN + FRIENDLY + SECRET
 FRIENDLY_HERO_POWER = IN_PLAY + FRIENDLY + HERO_POWER
 
-OPPONENT = ALL_PLAYERS + ENEMY
 ENEMY_HERO = IN_PLAY + ENEMY + HERO
 ENEMY_MINIONS = IN_PLAY + ENEMY + MINION
 ENEMY_CHARACTERS = IN_PLAY + ENEMY + CHARACTER
