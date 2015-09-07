@@ -78,7 +78,7 @@ class Action:  # Lawsuit
 			if event.at != at:
 				continue
 			if isinstance(event.trigger, self.__class__) and event.trigger.matches(entity, args):
-				logger.info("%r triggers off %r from %r", entity, self, source)
+				logger.debug("%r triggers off %r from %r", entity, self, source)
 				entity.trigger_event(source, event, args)
 
 	def broadcast(self, source, at, *args):
@@ -129,7 +129,7 @@ class Attack(GameAction):
 		defender.defending = True
 		source.game.proposed_attacker = attacker
 		source.game.proposed_defender = defender
-		logger.info("%r attacks %r", attacker, defender)
+		logger.debug("%r attacks %r", attacker, defender)
 		self.broadcast(source, EventListener.ON, attacker, defender)
 		source.game._attack()
 
@@ -174,7 +174,7 @@ class Death(GameAction):
 		ENTITY = 0
 
 	def do(self, source, target):
-		logger.info("Processing Death for %r", target)
+		logger.debug("Processing Death for %r", target)
 		self.broadcast(source, EventListener.ON, target)
 		if target.deathrattles:
 			source.game.queue_actions(source, [Deathrattle(target)])
@@ -343,7 +343,7 @@ class TargetedAction(Action):
 			targets = self.get_targets(source, args[0])
 			args = args[1:]
 			source.game.manager.action(self, source, targets, *args)
-			logger.info("%r triggering %r targeting %r", source, self, targets)
+			logger.debug("%r triggering %r targeting %r", source, self, targets)
 			for target in targets:
 				target_args = self.get_target_args(source, target)
 				ret.append(self.do(source, target, *target_args))
@@ -412,7 +412,7 @@ class Deathrattle(TargetedAction):
 			source.game.queue_actions(target, actions)
 
 			if target.controller.extra_deathrattles:
-				logger.info("Triggering deathrattles for %r again", target)
+				logger.debug("Triggering deathrattles for %r again", target)
 				source.game.queue_actions(target, actions)
 
 
@@ -515,7 +515,7 @@ class Give(TargetedAction):
 		CARDS = 1
 
 	def do(self, source, target, cards):
-		logger.info("Giving %r to %s", cards, target)
+		logger.debug("Giving %r to %s", cards, target)
 		ret = []
 		for card in cards:
 			if len(target.hand) >= target.max_hand_size:
@@ -556,7 +556,7 @@ class Heal(TargetedAction):
 		amount = min(amount, target.damage)
 		if amount:
 			# Undamaged targets do not receive heals
-			logger.info("%r heals %r for %i", source, target, amount)
+			logger.debug("%r heals %r for %i", source, target, amount)
 			target.damage -= amount
 			self.broadcast(source, EventListener.ON, target, amount)
 
@@ -601,7 +601,7 @@ class Morph(TargetedAction):
 		return (card, )
 
 	def do(self, source, target, card):
-		logger.info("Morphing %r into %r", target, card)
+		logger.debug("Morphing %r into %r", target, card)
 		target.clear_buffs()
 		target.zone = Zone.SETASIDE
 		card.zone = Zone.PLAY
@@ -652,7 +652,7 @@ class Reveal(TargetedAction):
 	Reveal secret targets.
 	"""
 	def do(self, source, target):
-		logger.info("Revealing secret %r", target)
+		logger.debug("jevealing secret %r", target)
 		self.broadcast(source, EventListener.ON, target)
 		target.zone = Zone.GRAVEYARD
 
@@ -709,7 +709,7 @@ class Summon(TargetedAction):
 		return super()._broadcast(entity, source, at, *args)
 
 	def do(self, source, target, cards):
-		logger.info("%s summons %r", target, cards)
+		logger.debug("%s summons %r", target, cards)
 		if not isinstance(cards, list):
 			cards = [cards]
 
@@ -775,7 +775,7 @@ class Steal(TargetedAction):
 	The controller is the controller of the source of the action.
 	"""
 	def do(self, source, target):
-		logger.info("%s takes control of %r", self, target)
+		logger.debug("%s takes control of %r", self, target)
 		zone = target.zone
 		target.zone = Zone.SETASIDE
 		target.controller = source.controller

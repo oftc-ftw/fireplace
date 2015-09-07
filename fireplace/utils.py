@@ -99,7 +99,7 @@ def get_logger(name, level=logging.DEBUG):
 		ch.setLevel(level)
 
 		formatter = logging.Formatter(
-			"[%(name)s.%(module)s]: %(message)s",
+			"[%(name)s.%(module)s] %(levelname)s: %(message)s",
 			datefmt="%H:%M:%S"
 		)
 		ch.setFormatter(formatter)
@@ -109,4 +109,4 @@ def get_logger(name, level=logging.DEBUG):
 	return logger
 
 
-fireplace_logger = get_logger("fireplace", logging.DEBUG)
+fireplace_logger = get_logger("fireplace", logging.INFO)

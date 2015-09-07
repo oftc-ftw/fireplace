@@ -16,7 +16,7 @@ class AuraBuff:
 		self.tick = self.source.game.tick
 
 	def destroy(self):
-		logger.info("Destroying %r", self)
+		logger.debug("Destroying %r", self)
 		self.entity.slots.remove(self)
 		self.source.game.active_aura_buffs.remove(self)
 
@@ -61,7 +61,7 @@ class TargetableByAuras:
 				slot.tick = source.game.tick
 				break
 		else:
-			logger.info("Aura from %r buffs %r with %r", source, self, id)
+			logger.debug("Aura from %r buffs %r with %r", source, self, id)
 			buff = source.buff(self, id)
 			buff.tick = source.game.tick
 			source.game.active_aura_buffs.append(buff)
@@ -76,7 +76,7 @@ class TargetableByAuras:
 				break
 		else:
 			buff = AuraBuff(source, self)
-			logger.info("Creating %r", buff)
+			logger.debug("Creating %r", buff)
 			buff.update_tags(tags)
 			self.slots.append(buff)
 			source.game.active_aura_buffs.append(buff)

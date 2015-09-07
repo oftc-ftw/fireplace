@@ -1,4 +1,5 @@
 import uuid
+import logging
 from .utils import fireplace_logger
 
 
@@ -33,8 +34,8 @@ class Entity(object):
 			return i
 		return getattr(self.data.scripts, attr, lambda s, x: x)(self, i)
 
-	def log(self, message, *args):
-		self.logger.info(message, *args)
+	def log(self, message, *args, level=logging.DEBUG):
+		self.logger.log(level, message, *args)
 
 	def get_actions(self, name):
 		actions = getattr(self.data.scripts, name, None)
