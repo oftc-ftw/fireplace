@@ -37,8 +37,8 @@ class Entity(object):
 	def log(self, message, *args, level=logging.DEBUG):
 		self.logger.log(level, message, *args)
 
-	def get_actions(self, name):
-		actions = getattr(self.data.scripts, name, None)
+	def get_actions(self, name, base=None):
+		actions = getattr((self if base is None else base).data.scripts, name, None)
 		if callable(actions):
 			actions = actions(self)
 		if actions and not hasattr(actions, "__iter__"):
