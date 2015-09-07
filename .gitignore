@@ -1,2 +1,4 @@
 __pycache__
 *.xml
+*.swp
+fireplace/cards/data/hs-data
