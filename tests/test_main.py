@@ -687,6 +687,29 @@ def test_dragon_egg():
 	assert len(game.player1.field.filter(id="BRM_022t")) == 3
 
 
+def test_dragonhawk_rider():
+	game = prepare_game()
+	rider = game.player1.give("AT_083")
+	rider.play()
+	game.end_turn(); game.end_turn()
+	
+	assert not rider.windfury
+	game.player1.hero.power.use()
+	assert rider.windfury
+	game.end_turn(); game.end_turn()
+
+	windfury = game.player1.give("CS2_039")
+	windfury.play(target=rider)
+	assert rider.windfury
+	game.end_turn(); game.end_turn()
+
+	assert rider.windfury
+	game.player1.hero.power.use()
+	rider.attack(game.player2.hero)
+	rider.attack(game.player2.hero)
+	assert not rider.can_attack()
+
+
 def test_dr_boom():
 	game = prepare_game()
 	boom = game.player1.give("GVG_110")
@@ -800,6 +823,16 @@ def test_siltfin_spiritwalker():
 	murloc.play()
 	game.player1.give(MOONFIRE).play(target=murloc)
 	assert len(game.player1.hand) == 1
+
+
+def test_silver_hand_regent():
+	game = prepare_game(HUNTER, HUNTER)
+	regent = game.player1.give("AT_100")
+	regent.play()
+	assert len(game.player1.field) == 1
+	game.player1.hero.power.use()
+	assert len(game.player1.field) == 2
+	assert game.player1.field[1].id == "CS2_101t"
 
 
 def test_skycapn_kragg():
@@ -1765,6 +1798,17 @@ def test_mana_wyrm():
 	assert wyrm.atk == 2
 	game.player1.give(THE_COIN).play()
 	assert wyrm.atk == 3
+
+
+def test_master_of_disguise():
+	game = prepare_game()
+	wisp = game.player1.give(WISP)
+	wisp.play()
+	masterofdisguise = game.player1.give("NEW1_014")
+	masterofdisguise.play(target=wisp)
+	assert wisp.stealthed
+	game.end_turn(); game.end_turn()
+	assert wisp.stealthed
 
 
 def test_old_murkeye():
@@ -3001,6 +3045,17 @@ def test_gahzrilla():
 	# assert gahz.atk == (6*2*2) + 1
 
 
+def test_grand_crusader():
+	game = prepare_game(WARRIOR, WARRIOR)
+	game.player1.discard_hand()
+	crusader = game.player1.give("AT_118")
+	assert len(game.player1.hand) == 1
+	crusader.play()
+	assert len(game.player1.hand) == 1
+	assert game.player1.hand[0].card_class == CardClass.PALADIN
+	assert game.player1.hand[0].data.collectible
+
+
 def test_grimscale_oracle():
 	game = prepare_game()
 	grimscale = game.player1.give("EX1_508")
@@ -3219,6 +3274,23 @@ def test_iron_juggernaut():
 	assert len(game.player2.hand) == 0
 
 
+def test_lance_carrier():
+	game = prepare_game()
+	wisp = game.player2.summon(WISP)
+	carrier1 = game.player1.give("AT_084")
+	assert len(carrier1.targets) == 0
+	carrier1.play()
+	game.end_turn()
+
+	carrier2 = game.player2.give("AT_084")
+	assert wisp.atk == 1
+	carrier2.play(target=wisp)
+	assert wisp.atk == 3
+	game.end_turn(); game.end_turn()
+
+	assert wisp.atk == 3
+
+
 def test_leeroy():
 	game = prepare_game()
 	leeroy = game.player1.give("EX1_116")
@@ -3270,6 +3342,20 @@ def test_lorewalker_cho():
 	assert len(game.current_player.opponent.hand) == 1
 	assert game.current_player.opponent.hand[0].id == THE_COIN
 	game.current_player.give(THE_COIN).play()
+
+
+def test_lowly_squire():
+	game = prepare_game(HUNTER, HUNTER)
+	squire = game.player1.give("AT_082")
+	squire.play()
+	assert squire.atk == 1
+	game.player1.hero.power.use()
+	assert squire.atk == 2
+	game.end_turn(); game.end_turn()
+
+	assert squire.atk == 2
+	game.player1.hero.power.use()
+	assert squire.atk == 3
 
 
 def test_lava_shock():
@@ -4101,6 +4187,18 @@ def test_warsong_commander_faceless_manipulator_buffed():
 	copy = game.player1.field.filter(id="EX1_399")[0]
 	assert copy == gurubashi
 	assert not copy.charge
+
+
+def test_warsong_commander_stormwind_champion():
+	# test 9 - Warsong and Stormwind Champion on Play, then Raging Worgen
+	game = prepare_game()
+	game.player1.give(WARSONG_COMMANDER).play()
+	game.player1.give("CS2_222").play()
+	game.end_turn(); game.end_turn()
+
+	worgen = game.player1.give("EX1_412")
+	worgen.play()
+	assert not worgen.charge
 
 
 def test_warsong_commander_lightspawn():
