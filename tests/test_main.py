@@ -688,7 +688,7 @@ def test_dragon_egg():
 
 
 def test_dragonhawk_rider():
-	game = prepare_game()
+	game = prepare_game(WARRIOR, WARRIOR)
 	rider = game.player1.give("AT_083")
 	rider.play()
 	game.end_turn(); game.end_turn()
